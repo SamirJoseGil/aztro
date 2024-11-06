@@ -16,8 +16,6 @@ public class Libro {
 
     private String titulo;
     private String descripcion;
-    private String continente; 
-
 
     // Getters and Setters
     public int getId() {
