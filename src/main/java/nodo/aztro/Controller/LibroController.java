@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import nodo.aztro.Dto.BooksByAuthor;
 import nodo.aztro.Models.Libro;
+import nodo.aztro.Repositories.LibroByAuthorRepository;
 import nodo.aztro.Repositories.LibroRepository;
 import nodo.aztro.Services.LibroService;
 
@@ -23,6 +25,8 @@ public class LibroController {
     @Autowired
     private LibroRepository _libroRepository;
 
+    @Autowired 
+    private LibroByAuthorRepository _libroByAuthorRepository;
 
     // Metodos
     @GetMapping("/index")
@@ -35,5 +39,20 @@ public class LibroController {
     public ResponseEntity<List<Libro>> findTwoLibros(@PathVariable String titulo1, @PathVariable String titulo2) {
         List<Libro> libros = new LibroService(_libroRepository).findTwoLibros(titulo1, titulo2);
         return new ResponseEntity<>(libros, HttpStatus.OK);
+    }
+
+    // Traer libros por Id del autor
+    @GetMapping("/getByAuthorId/{Id}")
+    public ResponseEntity<Iterable<BooksByAuthor>> getAllBooksByAuthorId(@PathVariable("Id") Integer idAuthor)
+    {
+        var response = new LibroService(_libroByAuthorRepository).getAllBooksByAuthorId(idAuthor);
+        return new ResponseEntity<Iterable<BooksByAuthor>>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/getByAuthorName/{name}")
+    public ResponseEntity<Iterable<BooksByAuthor>> getAllBooksByAuthorName(@PathVariable("name") String nameAuthor)
+    {
+        var response = new LibroService(_libroByAuthorRepository).getAllBooksByAuthorName(nameAuthor);
+        return new ResponseEntity<Iterable<BooksByAuthor>>(response, HttpStatus.OK);
     }
 }

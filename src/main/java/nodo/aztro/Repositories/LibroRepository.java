@@ -18,5 +18,4 @@ public interface LibroRepository extends CrudRepository<Libro, Integer> {
         nativeQuery = true,
         value =  "SELECT * FROM Libro WHERE titulo LIKE %:titulo1% OR titulo LIKE %:titulo2%")
     List<Libro> findTwoLibros (String titulo1, String titulo2);
-
 }
