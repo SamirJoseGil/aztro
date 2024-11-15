@@ -31,6 +31,8 @@ public class SecurityConfig {
             .csrf().disable()
             .authorizeRequests()
             .requestMatchers("/auth/**").permitAll()
+            .requestMatchers("/Prueba/**").hasRole("ADMIN")
+            .requestMatchers("/Libro/**").hasAnyRole("USER", "ADMIN")
             .anyRequest().authenticated()
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

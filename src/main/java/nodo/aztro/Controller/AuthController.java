@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -55,8 +57,15 @@ public class AuthController {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 
-            // Generar JWT
-            String jwtToken = jwtUtil.generateToken(user.getUsername());
+            // Obtener los detalles del usuario, incluido el rol
+            UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
+            String role = userDetails.getAuthorities().stream()
+                    .findFirst()
+                    .map(GrantedAuthority::getAuthority)
+                    .orElse("USER"); // Asigna "USER" si no hay rol específico
+
+            // Generar JWT con el rol
+            String jwtToken = jwtUtil.generateToken(user.getUsername(), role);
 
             // Devolver el JWT al usuario
             return ResponseEntity.ok("Bearer " + jwtToken);

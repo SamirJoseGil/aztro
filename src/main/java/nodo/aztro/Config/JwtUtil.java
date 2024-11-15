@@ -16,10 +16,11 @@ public class JwtUtil {
 
 
     // Generación del token
-    public String generateToken(String username) {
+    public String generateToken(String username, String role) {
         // Usamos la misma SECRET_KEY para firmar el token
         return Jwts.builder()
                 .setSubject(username) // Establecemos el usuario como el sujeto
+                .claim("role", role)
                 .setIssuedAt(new Date(System.currentTimeMillis())) // Fecha de emisión
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // Fecha de expiración
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY) // Firmamos con la clave secreta
@@ -39,6 +40,16 @@ public class JwtUtil {
                 .parseClaimsJws(token) // Parseamos el token y obtenemos las claims
                 .getBody()
                 .getSubject(); // Extraemos el nombre de usuario
+    }
+
+    // Extraemos los roles del token
+    public String extractRoles(String token) {
+        return Jwts.parser()
+                .setSigningKey(SECRET_KEY) // Usamos la misma clave secreta para verificar la firma
+                .build()
+                .parseClaimsJws(token) // Parseamos el token y obtenemos las claims
+                .getBody()
+                .getSubject(); // Extraemos los roles
     }
 
     // Verificamos si el token ha expirado
